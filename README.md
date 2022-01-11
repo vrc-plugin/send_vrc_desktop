@@ -1,1 +1,1 @@
-# send_vrc_desktop.rs
+# send-vrc-desktop-rs
