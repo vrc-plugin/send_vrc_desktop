@@ -5,9 +5,11 @@ use windows::Win32::Globalization::lstrcpyA;
 use windows::Win32::System::DataExchange::{
     CloseClipboard, EmptyClipboard, OpenClipboard, SetClipboardData,
 };
-use windows::Win32::System::Memory::{GlobalAlloc, GlobalLock, GlobalUnlock};
+use windows::Win32::System::Memory::{GlobalAlloc, GlobalLock, GlobalUnlock, GHND};
+use windows::Win32::System::SystemServices::CF_TEXT;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
-    MapVirtualKeyA, SendInput, INPUT, INPUT_0, KEYBDINPUT,
+    MapVirtualKeyA, SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP,
+    VK_LCONTROL, VK_RETURN, VK_V,
 };
 use windows::Win32::UI::WindowsAndMessaging::{FindWindowA, SetForegroundWindow};
 
@@ -30,7 +32,6 @@ fn set_clipboard(value: &str) -> Result<()> {
     let result = unsafe { EmptyClipboard() };
     ensure!(result.as_bool(), "failed to initialize clipboard");
 
-    const GHND: u32 = 0x0042;
     let hmem = unsafe { GlobalAlloc(GHND, value.len() + 1) };
 
     let lpstring1 = PSTR(unsafe { GlobalLock(hmem) as _ });
@@ -38,7 +39,6 @@ fn set_clipboard(value: &str) -> Result<()> {
     let result = unsafe { GlobalUnlock(hmem) };
     ensure!(!result.as_bool(), "failed to unlock memory");
 
-    const CF_TEXT: u32 = 1;
     let handle = unsafe { SetClipboardData(CF_TEXT, HANDLE(hmem)) };
     ensure!(!handle.is_invalid(), "failed to set data to clipboard");
 
@@ -63,11 +63,11 @@ fn send_input(inputs: &[INPUT]) -> Result<()> {
 fn send_paste_input() -> Result<()> {
     let inputs = [
         INPUT {
-            r#type: 0x0001, // INPUT_KEYBOARD
+            r#type: INPUT_KEYBOARD,
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
-                    wVk: 0xA2, // VK_LCONTROL
-                    wScan: unsafe { MapVirtualKeyA(0xA2, 0) } as u16,
+                    wVk: VK_LCONTROL,
+                    wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
                     dwFlags: 0x0000, // NONE
                     time: 0,
                     dwExtraInfo: 0x0000,
@@ -75,11 +75,11 @@ fn send_paste_input() -> Result<()> {
             },
         },
         INPUT {
-            r#type: 0x0001, // INPUT_KEYBOARD
+            r#type: INPUT_KEYBOARD,
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
-                    wVk: 0x56, // VK_V
-                    wScan: unsafe { MapVirtualKeyA(0x56, 0) } as u16,
+                    wVk: VK_V,
+                    wScan: unsafe { MapVirtualKeyA(VK_V as u32, 0) } as u16,
                     dwFlags: 0x0000, // NONE
                     time: 0,
                     dwExtraInfo: 0x0000,
@@ -87,24 +87,24 @@ fn send_paste_input() -> Result<()> {
             },
         },
         INPUT {
-            r#type: 0x0001, // INPUT_KEYBOARD
+            r#type: INPUT_KEYBOARD,
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
-                    wVk: 0x56, // VK_V
-                    wScan: unsafe { MapVirtualKeyA(0x56, 0) } as u16,
-                    dwFlags: 0x0002, // KEYEVENTF_KEYUP
+                    wVk: VK_V,
+                    wScan: unsafe { MapVirtualKeyA(VK_V as u32, 0) } as u16,
+                    dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0x0000,
                 },
             },
         },
         INPUT {
-            r#type: 0x0001, // INPUT_KEYBOARD
+            r#type: INPUT_KEYBOARD,
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
-                    wVk: 0xA2, // VK_LCONTROL
-                    wScan: unsafe { MapVirtualKeyA(0xA2, 0) } as u16,
-                    dwFlags: 0x0002, // KEYEVENTF_KEYUP
+                    wVk: VK_LCONTROL,
+                    wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                    dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0x0000,
                 },
@@ -119,11 +119,11 @@ fn send_paste_input() -> Result<()> {
 fn send_enter_input() -> Result<()> {
     let inputs = [
         INPUT {
-            r#type: 0x0001, // INPUT_KEYBOARD
+            r#type: INPUT_KEYBOARD,
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
-                    wVk: 0x0D, // VK_RETURN
-                    wScan: unsafe { MapVirtualKeyA(0x0D, 0) } as u16,
+                    wVk: VK_RETURN,
+                    wScan: unsafe { MapVirtualKeyA(VK_RETURN as u32, 0) } as u16,
                     dwFlags: 0x0000, // NONE
                     time: 0,
                     dwExtraInfo: 0x0000,
@@ -131,12 +131,12 @@ fn send_enter_input() -> Result<()> {
             },
         },
         INPUT {
-            r#type: 0x0001, // INPUT_KEYBOARD
+            r#type: INPUT_KEYBOARD,
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
-                    wVk: 0x0D, // VK_RETURN
-                    wScan: unsafe { MapVirtualKeyA(0x0D, 0) } as u16,
-                    dwFlags: 0x0002, // KEYEVENTF_KEYUP
+                    wVk: VK_RETURN,
+                    wScan: unsafe { MapVirtualKeyA(VK_RETURN as u32, 0) } as u16,
+                    dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0x0000,
                 },
