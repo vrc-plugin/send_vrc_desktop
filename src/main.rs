@@ -68,9 +68,9 @@ fn send_paste_input() -> Result<()> {
                 ki: KEYBDINPUT {
                     wVk: VK_LCONTROL,
                     wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
-                    dwFlags: 0x0000, // NONE
+                    dwFlags: 0,
                     time: 0,
-                    dwExtraInfo: 0x0000,
+                    dwExtraInfo: 0,
                 },
             },
         },
@@ -80,9 +80,9 @@ fn send_paste_input() -> Result<()> {
                 ki: KEYBDINPUT {
                     wVk: VK_V,
                     wScan: unsafe { MapVirtualKeyA(VK_V as u32, 0) } as u16,
-                    dwFlags: 0x0000, // NONE
+                    dwFlags: 0,
                     time: 0,
-                    dwExtraInfo: 0x0000,
+                    dwExtraInfo: 0,
                 },
             },
         },
@@ -94,7 +94,7 @@ fn send_paste_input() -> Result<()> {
                     wScan: unsafe { MapVirtualKeyA(VK_V as u32, 0) } as u16,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
-                    dwExtraInfo: 0x0000,
+                    dwExtraInfo: 0,
                 },
             },
         },
@@ -106,7 +106,7 @@ fn send_paste_input() -> Result<()> {
                     wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
-                    dwExtraInfo: 0x0000,
+                    dwExtraInfo: 0,
                 },
             },
         },
@@ -124,9 +124,9 @@ fn send_enter_input() -> Result<()> {
                 ki: KEYBDINPUT {
                     wVk: VK_RETURN,
                     wScan: unsafe { MapVirtualKeyA(VK_RETURN as u32, 0) } as u16,
-                    dwFlags: 0x0000, // NONE
+                    dwFlags: 0,
                     time: 0,
-                    dwExtraInfo: 0x0000,
+                    dwExtraInfo: 0,
                 },
             },
         },
@@ -138,7 +138,7 @@ fn send_enter_input() -> Result<()> {
                     wScan: unsafe { MapVirtualKeyA(VK_RETURN as u32, 0) } as u16,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
-                    dwExtraInfo: 0x0000,
+                    dwExtraInfo: 0,
                 },
             },
         },
