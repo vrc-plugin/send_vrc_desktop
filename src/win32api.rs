@@ -2,6 +2,8 @@ pub mod window {
     use anyhow::{ensure, Result};
     use windows::Win32::UI::WindowsAndMessaging::{FindWindowA, SetForegroundWindow};
 
+    use crate::win32api::input::send_dummy_input;
+
     pub fn find_window_by_name(name: &str) -> Result<isize> {
         let hwnd = unsafe { FindWindowA(None, name) };
         ensure!(hwnd != 0, "`{}` does not exists", name);
@@ -10,7 +12,13 @@ pub mod window {
 
     pub fn set_foreground_window(hwnd: isize) -> Result<()> {
         let result = unsafe { SetForegroundWindow(hwnd) };
-        ensure!(result.as_bool(), "failed to set foreground window");
+        if !result.as_bool() {
+            send_dummy_input()?;
+
+            let result = unsafe { SetForegroundWindow(hwnd) };
+            ensure!(result.as_bool(), "failed to set foreground window");
+        }
+
         Ok(())
     }
 }
@@ -77,6 +85,38 @@ pub mod input {
             )
         };
         ensure!(result != 0);
+        Ok(())
+    }
+
+    pub fn send_dummy_input() -> Result<()> {
+        let inputs = [
+            INPUT {
+                r#type: INPUT_KEYBOARD,
+                Anonymous: INPUT_0 {
+                    ki: KEYBDINPUT {
+                        wVk: VK_LCONTROL,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                        dwFlags: 0,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    },
+                },
+            },
+            INPUT {
+                r#type: INPUT_KEYBOARD,
+                Anonymous: INPUT_0 {
+                    ki: KEYBDINPUT {
+                        wVk: VK_LCONTROL,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                        dwFlags: KEYEVENTF_KEYUP,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    },
+                },
+            },
+        ];
+        let result = send_input(&inputs);
+        ensure!(result.is_ok(), "failed to send dummy (`Ctrl`) input");
         Ok(())
     }
 
