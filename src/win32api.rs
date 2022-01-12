@@ -106,9 +106,9 @@ pub mod input {
     fn send_input(inputs: &[INPUT]) -> Result<()> {
         let result = unsafe {
             SendInput(
-                inputs.len() as u32,
+                inputs.len() as _,
                 inputs.as_ptr(),
-                std::mem::size_of::<INPUT>() as i32,
+                std::mem::size_of::<INPUT>() as _,
             )
         };
         ensure!(result != 0);
@@ -122,7 +122,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_LCONTROL,
-                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as _, 0) } as _,
                         dwFlags: 0,
                         time: 0,
                         dwExtraInfo: 0,
@@ -134,7 +134,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_LCONTROL,
-                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as _, 0) } as _,
                         dwFlags: KEYEVENTF_KEYUP,
                         time: 0,
                         dwExtraInfo: 0,
@@ -154,7 +154,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_LCONTROL,
-                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as _, 0) } as _,
                         dwFlags: 0,
                         time: 0,
                         dwExtraInfo: 0,
@@ -166,7 +166,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_V,
-                        wScan: unsafe { MapVirtualKeyA(VK_V as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_V as _, 0) } as _,
                         dwFlags: 0,
                         time: 0,
                         dwExtraInfo: 0,
@@ -178,7 +178,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_V,
-                        wScan: unsafe { MapVirtualKeyA(VK_V as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_V as _, 0) } as _,
                         dwFlags: KEYEVENTF_KEYUP,
                         time: 0,
                         dwExtraInfo: 0,
@@ -190,7 +190,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_LCONTROL,
-                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as _, 0) } as _,
                         dwFlags: KEYEVENTF_KEYUP,
                         time: 0,
                         dwExtraInfo: 0,
@@ -210,7 +210,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_RETURN,
-                        wScan: unsafe { MapVirtualKeyA(VK_RETURN as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_RETURN as _, 0) } as _,
                         dwFlags: 0,
                         time: 0,
                         dwExtraInfo: 0,
@@ -222,7 +222,7 @@ pub mod input {
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
                         wVk: VK_RETURN,
-                        wScan: unsafe { MapVirtualKeyA(VK_RETURN as u32, 0) } as u16,
+                        wScan: unsafe { MapVirtualKeyA(VK_RETURN as _, 0) } as _,
                         dwFlags: KEYEVENTF_KEYUP,
                         time: 0,
                         dwExtraInfo: 0,
