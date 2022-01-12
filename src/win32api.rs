@@ -24,7 +24,7 @@ pub mod window {
 }
 
 pub mod clipboard {
-    use anyhow::{ensure, Result};
+    use anyhow::{bail, ensure, Result};
 
     use windows::Win32::Foundation::{HANDLE, PWSTR};
     use windows::Win32::Globalization::lstrcpyW;
@@ -41,25 +41,52 @@ pub mod clipboard {
         ensure!(result.as_bool(), "failed to open clipboard");
 
         let result = unsafe { EmptyClipboard() };
-        ensure!(result.as_bool(), "failed to initialize clipboard");
+        if !result.as_bool() {
+            unsafe { CloseClipboard() };
+            bail!("failed to initialize clipboard")
+        }
 
         let hmem = unsafe { GlobalAlloc(GHND, value.len() * std::mem::size_of::<u16>()) };
-        ensure!(hmem != 0, "failed to allocate");
+        if hmem == 0 {
+            unsafe { GlobalFree(hmem) };
+            unsafe { CloseClipboard() };
+            bail!("failed to allocate")
+        }
 
         let mem_ptr = unsafe { GlobalLock(hmem) } as *mut u16;
-        ensure!(!mem_ptr.is_null(), "failed to lock");
+        if mem_ptr.is_null() {
+            unsafe { GlobalFree(hmem) };
+            unsafe { CloseClipboard() };
+            bail!("failed to lock")
+        }
 
         let pwstr = unsafe { lstrcpyW(PWSTR(mem_ptr), PWSTR(value.as_mut_ptr())) };
-        ensure!(!pwstr.is_null(), "failed to lstrcpy");
+        if pwstr.is_null() {
+            unsafe { GlobalUnlock(hmem) };
+            unsafe { GlobalFree(hmem) };
+            unsafe { CloseClipboard() };
+            bail!("failed to lstrcpy")
+        }
 
         let result = unsafe { GlobalUnlock(hmem) };
-        ensure!(!result.as_bool(), "failed to unlock");
+        if result.as_bool() {
+            unsafe { GlobalFree(hmem) };
+            unsafe { CloseClipboard() };
+            bail!("failed to unlock")
+        }
 
         let handle = unsafe { SetClipboardData(CF_UNICODETEXT, HANDLE(hmem)) };
-        ensure!(!handle.is_invalid(), "failed to set data to clipboard");
+        if handle.is_invalid() {
+            unsafe { GlobalFree(hmem) };
+            unsafe { CloseClipboard() };
+            bail!("failed to set data to clipboard")
+        }
 
         let result = unsafe { GlobalFree(hmem) };
-        ensure!(result == 0, "failed to free");
+        if result != 0 {
+            unsafe { CloseClipboard() };
+            bail!("failed to free")
+        }
 
         let result = unsafe { CloseClipboard() };
         ensure!(result.as_bool(), "failed to close clipboard");
