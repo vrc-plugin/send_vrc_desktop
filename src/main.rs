@@ -5,7 +5,7 @@ use windows::Win32::Globalization::lstrcpyW;
 use windows::Win32::System::DataExchange::{
     CloseClipboard, EmptyClipboard, OpenClipboard, SetClipboardData,
 };
-use windows::Win32::System::Memory::{GlobalAlloc, GlobalLock, GlobalUnlock, GHND};
+use windows::Win32::System::Memory::{GlobalAlloc, GlobalFree, GlobalLock, GlobalUnlock, GHND};
 use windows::Win32::System::SystemServices::CF_UNICODETEXT;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
     MapVirtualKeyA, SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP,
@@ -48,6 +48,9 @@ fn set_clipboard(value: &str) -> Result<()> {
 
     let handle = unsafe { SetClipboardData(CF_UNICODETEXT, HANDLE(hmem)) };
     ensure!(!handle.is_invalid(), "failed to set data to clipboard");
+
+    let result = unsafe { GlobalFree(hmem) };
+    ensure!(result == 0, "failed to free");
 
     let result = unsafe { CloseClipboard() };
     ensure!(result.as_bool(), "failed to close clipboard");
