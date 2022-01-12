@@ -35,11 +35,16 @@ fn set_clipboard(value: &str) -> Result<()> {
     ensure!(result.as_bool(), "failed to initialize clipboard");
 
     let hmem = unsafe { GlobalAlloc(GHND, value.len() * std::mem::size_of::<u16>()) };
+    ensure!(hmem != 0, "failed to allocate");
 
-    let lpwstring1 = PWSTR(unsafe { GlobalLock(hmem) as _ });
-    unsafe { lstrcpyW(lpwstring1, PWSTR(value.as_mut_ptr())) };
+    let mem_ptr = unsafe { GlobalLock(hmem) } as *mut u16;
+    ensure!(!mem_ptr.is_null(), "failed to lock");
+
+    let pwstr = unsafe { lstrcpyW(PWSTR(mem_ptr), PWSTR(value.as_mut_ptr())) };
+    ensure!(!pwstr.is_null(), "failed to lstrcpy");
+
     let result = unsafe { GlobalUnlock(hmem) };
-    ensure!(!result.as_bool(), "failed to unlock memory");
+    ensure!(!result.as_bool(), "failed to unlock");
 
     let handle = unsafe { SetClipboardData(CF_UNICODETEXT, HANDLE(hmem)) };
     ensure!(!handle.is_invalid(), "failed to set data to clipboard");
