@@ -25,73 +25,132 @@ pub mod window {
 
 pub mod clipboard {
     use anyhow::{bail, ensure, Result};
+    use std::num::NonZeroIsize;
 
-    use windows::Win32::Foundation::{HANDLE, PWSTR};
+    use windows::Win32::Foundation::{GetLastError, HANDLE, NO_ERROR, PWSTR};
     use windows::Win32::Globalization::lstrcpyW;
     use windows::Win32::System::DataExchange::{
         CloseClipboard, EmptyClipboard, OpenClipboard, SetClipboardData,
     };
-    use windows::Win32::System::Memory::{GlobalAlloc, GlobalFree, GlobalLock, GlobalUnlock, GHND};
+    use windows::Win32::System::Memory::{
+        GlobalAlloc, GlobalFree, GlobalLock, GlobalUnlock, GHND, GLOBAL_ALLOC_FLAGS,
+    };
     use windows::Win32::System::SystemServices::CF_UNICODETEXT;
 
+    type NonZeroHANDLE = NonZeroIsize;
+
+    struct GStr {
+        hmem: Option<NonZeroHANDLE>,
+    }
+
+    impl GStr {
+        fn try_new(uflags: GLOBAL_ALLOC_FLAGS, dwbytes: usize) -> Result<Self> {
+            let hmem = unsafe { GlobalAlloc(uflags, dwbytes) };
+            ensure!(hmem != 0, "failed to allocate : {}", unsafe {
+                GetLastError()
+            });
+            Ok(GStr {
+                hmem: NonZeroHANDLE::new(hmem),
+            })
+        }
+
+        fn try_from(s: &str) -> Result<Self> {
+            let mut s: Vec<_> = s.encode_utf16().chain(Some(0)).collect();
+            let gs = Self::try_new(GHND, s.len() * std::mem::size_of::<u16>())?;
+            let result = unsafe { lstrcpyW(PWSTR(gs.lock()?), PWSTR(s.as_mut_ptr())) };
+            ensure!(!result.is_null(), "failed to write : {}", unsafe {
+                GetLastError()
+            });
+            gs.unlock()?;
+            Ok(gs)
+        }
+
+        fn lock(&self) -> Result<*mut u16> {
+            if let Some(hmem) = self.hmem {
+                let result = unsafe { GlobalLock(hmem.get()) };
+                ensure!(!result.is_null(), "failed to lock : {}", unsafe {
+                    GetLastError()
+                });
+                Ok(result as _)
+            } else {
+                bail!("lock called on empty GStr")
+            }
+        }
+
+        fn unlock(&self) -> Result<()> {
+            if let Some(hmem) = self.hmem {
+                let result = unsafe { GlobalUnlock(hmem.get()) };
+                if !result.as_bool() {
+                    let err = unsafe { GetLastError() };
+                    ensure!(err == NO_ERROR, "failed to unlock : {}", err);
+                }
+                Ok(())
+            } else {
+                bail!("unlock called on empty GStr")
+            }
+        }
+    }
+
+    impl Drop for GStr {
+        fn drop(&mut self) {
+            if let Some(hmem) = self.hmem {
+                let result = unsafe { GlobalFree(hmem.get()) };
+                assert!(result != 0, "failed to free : {}", unsafe {
+                    GetLastError()
+                });
+            }
+        }
+    }
+
+    struct Clipboard {
+        _dummy: (),
+    }
+
+    impl Clipboard {
+        fn open() -> Result<Self> {
+            let result = unsafe { OpenClipboard(0) };
+            ensure!(result.as_bool(), "failed to open clipboard : {}", unsafe {
+                GetLastError()
+            });
+            Ok(Self { _dummy: () })
+        }
+
+        fn empty(&self) -> Result<()> {
+            let result = unsafe { EmptyClipboard() };
+            ensure!(
+                result.as_bool(),
+                "failed to initialize clipboard : {}",
+                unsafe { GetLastError() }
+            );
+            Ok(())
+        }
+
+        fn set(&self, s: &str) -> Result<()> {
+            self.empty()?;
+            let mut gs = GStr::try_from(s)?;
+            let handle =
+                unsafe { SetClipboardData(CF_UNICODETEXT, HANDLE(gs.hmem.unwrap().get())) };
+            ensure!(
+                !handle.is_invalid(),
+                "failed to set data to clipboard : {}",
+                unsafe { GetLastError() }
+            );
+            gs.hmem = None;
+            Ok(())
+        }
+    }
+
+    impl Drop for Clipboard {
+        fn drop(&mut self) {
+            let result = unsafe { CloseClipboard() };
+            assert!(result.as_bool(), "failed to close clipboard : {}", unsafe {
+                GetLastError()
+            });
+        }
+    }
+
     pub fn set_clipboard(value: &str) -> Result<()> {
-        let mut value: Vec<u16> = value.encode_utf16().chain(Some(0)).collect();
-
-        let result = unsafe { OpenClipboard(None) };
-        ensure!(result.as_bool(), "failed to open clipboard");
-
-        let result = unsafe { EmptyClipboard() };
-        if !result.as_bool() {
-            unsafe { CloseClipboard() };
-            bail!("failed to initialize clipboard")
-        }
-
-        let hmem = unsafe { GlobalAlloc(GHND, value.len() * std::mem::size_of::<u16>()) };
-        if hmem == 0 {
-            unsafe { GlobalFree(hmem) };
-            unsafe { CloseClipboard() };
-            bail!("failed to allocate")
-        }
-
-        let mem_ptr = unsafe { GlobalLock(hmem) } as *mut u16;
-        if mem_ptr.is_null() {
-            unsafe { GlobalFree(hmem) };
-            unsafe { CloseClipboard() };
-            bail!("failed to lock")
-        }
-
-        let pwstr = unsafe { lstrcpyW(PWSTR(mem_ptr), PWSTR(value.as_mut_ptr())) };
-        if pwstr.is_null() {
-            unsafe { GlobalUnlock(hmem) };
-            unsafe { GlobalFree(hmem) };
-            unsafe { CloseClipboard() };
-            bail!("failed to lstrcpy")
-        }
-
-        let result = unsafe { GlobalUnlock(hmem) };
-        if result.as_bool() {
-            unsafe { GlobalFree(hmem) };
-            unsafe { CloseClipboard() };
-            bail!("failed to unlock")
-        }
-
-        let handle = unsafe { SetClipboardData(CF_UNICODETEXT, HANDLE(hmem)) };
-        if handle.is_invalid() {
-            unsafe { GlobalFree(hmem) };
-            unsafe { CloseClipboard() };
-            bail!("failed to set data to clipboard")
-        }
-
-        let result = unsafe { GlobalFree(hmem) };
-        if result != 0 {
-            unsafe { CloseClipboard() };
-            bail!("failed to free")
-        }
-
-        let result = unsafe { CloseClipboard() };
-        ensure!(result.as_bool(), "failed to close clipboard");
-
-        Ok(())
+        Clipboard::open()?.set(value)
     }
 }
 
