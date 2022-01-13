@@ -44,7 +44,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: "dist/send-vrc-desktop.zip"
+          files: "dist/send_vrc_desktop.zip"
           prerelease: ${{ contains(github.ref, '-beta') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
