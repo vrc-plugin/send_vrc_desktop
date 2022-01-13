@@ -1,14 +1,16 @@
 mod handle;
+mod router;
 mod win32api;
 
-use actix_web::{App, HttpServer};
+use std::net::SocketAddr;
 
-use handle::url;
-
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(url))
-        .bind("127.0.0.1:11400")?
-        .run()
+#[tokio::main]
+async fn main() {
+    let app = router::new();
+    let addr = SocketAddr::from(([127, 0, 0, 1], 11400));
+    println!("listening on {}", addr);
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
         .await
+        .unwrap();
 }
