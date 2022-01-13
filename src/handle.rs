@@ -23,6 +23,8 @@ pub struct ErrorResponse {
 pub async fn url(req: Json<UrlRequest>) -> impl Responder {
     let url = &req.url;
 
+    println!("receive url: {}", url);
+
     if let Err(e) = clipboard::set_clipboard(url) {
         return HttpResponse::BadRequest().json(ErrorResponse {
             error: format!("{}", e),
