@@ -1,5 +1,5 @@
 use actix_web::web::Json;
-use actix_web::{post, HttpResponse, Responder};
+use actix_web::{put, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 use crate::win32api::{clipboard, input, window};
@@ -19,7 +19,7 @@ pub struct ErrorResponse {
     pub error: String,
 }
 
-#[post("/url")]
+#[put("/url")]
 pub async fn url(req: Json<UrlRequest>) -> impl Responder {
     let url = &req.url;
 
