@@ -206,6 +206,30 @@ pub mod input {
                     },
                 },
             },
+            INPUT {
+                r#type: INPUT_KEYBOARD,
+                Anonymous: INPUT_0 {
+                    ki: KEYBDINPUT {
+                        wVk: VK_LCONTROL,
+                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as _, 0) } as _,
+                        dwFlags: KEYEVENTF_KEYUP,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    },
+                },
+            },
+            INPUT {
+                r#type: INPUT_KEYBOARD,
+                Anonymous: INPUT_0 {
+                    ki: KEYBDINPUT {
+                        wVk: VK_RCONTROL,
+                        wScan: unsafe { MapVirtualKeyA(VK_RCONTROL as _, 0) } as _,
+                        dwFlags: KEYEVENTF_KEYUP,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    },
+                },
+            },
         ];
 
         let result = send_input(&inputs);
