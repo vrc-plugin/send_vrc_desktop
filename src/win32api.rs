@@ -97,10 +97,11 @@ pub mod clipboard {
 
 pub mod input {
     use anyhow::{ensure, Result};
+    use std::{thread, time};
 
     use windows::Win32::UI::Input::KeyboardAndMouse::{
         MapVirtualKeyA, SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP,
-        VK_LCONTROL, VK_RETURN, VK_V,
+        VK_LCONTROL, VK_RCONTROL, VK_RETURN, VK_V,
     };
 
     fn send_input(inputs: &[INPUT]) -> Result<()> {
@@ -165,6 +166,26 @@ pub mod input {
                 r#type: INPUT_KEYBOARD,
                 Anonymous: INPUT_0 {
                     ki: KEYBDINPUT {
+                        wVk: VK_RCONTROL,
+                        wScan: unsafe { MapVirtualKeyA(VK_RCONTROL as _, 0) } as _,
+                        dwFlags: 0,
+                        time: 0,
+                        dwExtraInfo: 0,
+                    },
+                },
+            },
+        ];
+        let result = send_input(&inputs);
+        ensure!(result.is_ok(), "failed to send `Paste`(`Ctrl` + `V`) input");
+
+        let delay = time::Duration::from_millis(100);
+        thread::sleep(delay);
+
+        let inputs = [
+            INPUT {
+                r#type: INPUT_KEYBOARD,
+                Anonymous: INPUT_0 {
+                    ki: KEYBDINPUT {
                         wVk: VK_V,
                         wScan: unsafe { MapVirtualKeyA(VK_V as _, 0) } as _,
                         dwFlags: 0,
@@ -185,19 +206,8 @@ pub mod input {
                     },
                 },
             },
-            INPUT {
-                r#type: INPUT_KEYBOARD,
-                Anonymous: INPUT_0 {
-                    ki: KEYBDINPUT {
-                        wVk: VK_LCONTROL,
-                        wScan: unsafe { MapVirtualKeyA(VK_LCONTROL as _, 0) } as _,
-                        dwFlags: KEYEVENTF_KEYUP,
-                        time: 0,
-                        dwExtraInfo: 0,
-                    },
-                },
-            },
         ];
+
         let result = send_input(&inputs);
         ensure!(result.is_ok(), "failed to send `Paste`(`Ctrl` + `V`) input");
         Ok(())
