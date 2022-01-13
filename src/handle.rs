@@ -1,7 +1,7 @@
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::{Deserialize, Serialize};
 
-use crate::win32api::{clipboard, input, window};
+use crate::win32api::{input, window};
 
 #[derive(Deserialize)]
 pub struct UrlRequest {
@@ -16,7 +16,7 @@ pub struct UrlResponse {
 pub async fn url(Json(payload): Json<UrlRequest>) -> impl IntoResponse {
     let url = &payload.url;
 
-    if let Err(e) = clipboard::set_clipboard(url) {
+    if let Err(e) = clipboard_win::set_clipboard_string(url) {
         return (
             StatusCode::BAD_REQUEST,
             Json(UrlResponse {
