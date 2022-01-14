@@ -22,8 +22,10 @@ impl From<anyhow::Error> for ApiError {
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
-        let (status, message) = (StatusCode::BAD_REQUEST, format!("{}", self.err));
-        let body = Json(ErrorResponse { error: message });
+        let status = StatusCode::BAD_REQUEST;
+        let body = Json(ErrorResponse {
+            error: format!("{}", self.err),
+        });
         (status, body).into_response()
     }
 }
