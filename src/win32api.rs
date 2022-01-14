@@ -25,7 +25,6 @@ pub mod window {
 
 pub mod input {
     use anyhow::{ensure, Result};
-
     use windows::Win32::UI::Input::KeyboardAndMouse::{
         MapVirtualKeyA, SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYEVENTF_KEYUP,
         VK_LCONTROL, VK_RETURN, VK_V,
