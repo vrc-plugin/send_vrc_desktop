@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use axum::{response::IntoResponse, Json};
+use axum::Json;
 use clipboard_win::set_clipboard_string;
 use serde::{Deserialize, Serialize};
 
@@ -18,7 +18,7 @@ pub struct UrlResponse {
     pub message: String,
 }
 
-pub async fn url(Json(payload): Json<UrlRequest>) -> Result<impl IntoResponse, ApiError> {
+pub async fn url(Json(payload): Json<UrlRequest>) -> Result<Json<UrlResponse>, ApiError> {
     let url = &payload.url;
 
     set_clipboard_string(url).map_err(|_| anyhow!("failed to set clipboard"))?;
