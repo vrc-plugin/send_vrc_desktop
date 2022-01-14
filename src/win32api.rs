@@ -1,16 +1,19 @@
 pub mod window {
     use anyhow::{ensure, Result};
-    use windows::Win32::UI::WindowsAndMessaging::{FindWindowA, SetForegroundWindow};
+    use windows::Win32::{
+        Foundation::HWND,
+        UI::WindowsAndMessaging::{FindWindowA, SetForegroundWindow},
+    };
 
     use crate::win32api::input::send_dummy_input;
 
-    pub fn find_window_by_name(name: &str) -> Result<isize> {
+    pub fn find_window_by_name(name: &str) -> Result<HWND> {
         let hwnd = unsafe { FindWindowA(None, name) };
-        ensure!(hwnd != 0, "`{}` does not exists", name);
+        ensure!(!hwnd.is_invalid(), "`{}` does not exists", name);
         Ok(hwnd)
     }
 
-    pub fn set_foreground_window(hwnd: isize) -> Result<()> {
+    pub fn set_foreground_window(hwnd: HWND) -> Result<()> {
         let result = unsafe { SetForegroundWindow(hwnd) };
         if !result.as_bool() {
             send_dummy_input()?;
