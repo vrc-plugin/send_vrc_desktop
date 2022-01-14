@@ -74,7 +74,7 @@ pub async fn url(Json(payload): Json<UrlRequest>) -> impl IntoResponse {
     }
 
     (
-        StatusCode::CREATED,
+        StatusCode::OK,
         Json(UrlResponse {
             message: String::from("ok"),
         }),
