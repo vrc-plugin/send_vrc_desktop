@@ -1,3 +1,4 @@
+mod error;
 mod handle;
 mod router;
 mod win32api;

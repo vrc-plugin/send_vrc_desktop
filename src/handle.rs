@@ -1,7 +1,12 @@
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use anyhow::{anyhow, Result};
+use axum::{response::IntoResponse, Json};
+use clipboard_win::set_clipboard_string;
 use serde::{Deserialize, Serialize};
 
-use crate::win32api::{input, window};
+use crate::{
+    error::ApiError,
+    win32api::{input, window},
+};
 
 #[derive(Deserialize)]
 pub struct UrlRequest {
@@ -13,70 +18,21 @@ pub struct UrlResponse {
     pub message: String,
 }
 
-pub async fn url(Json(payload): Json<UrlRequest>) -> impl IntoResponse {
+pub async fn url(Json(payload): Json<UrlRequest>) -> Result<impl IntoResponse, ApiError> {
     let url = &payload.url;
 
-    if let Err(e) = clipboard_win::set_clipboard_string(url) {
-        return (
-            StatusCode::BAD_REQUEST,
-            Json(UrlResponse {
-                message: format!("{}", e),
-            }),
-        );
-    }
+    set_clipboard_string(url).map_err(|_| anyhow!("failed to set clipboard"))?;
 
-    let hwnd = match window::find_window_by_name("VRChat") {
-        Ok(hwnd) => hwnd,
-        Err(e) => {
-            return (
-                StatusCode::BAD_REQUEST,
-                Json(UrlResponse {
-                    message: format!("{}", e),
-                }),
-            );
-        }
-    };
+    let hwnd = window::find_window_by_name("VRChat")?;
+    window::set_foreground_window(hwnd)?;
 
-    if let Err(e) = input::send_dummy_input() {
-        return (
-            StatusCode::BAD_REQUEST,
-            Json(UrlResponse {
-                message: format!("{}", e),
-            }),
-        );
-    }
+    input::send_dummy_input()?;
+    window::set_foreground_window(hwnd)?;
 
-    if let Err(e) = window::set_foreground_window(hwnd) {
-        return (
-            StatusCode::BAD_REQUEST,
-            Json(UrlResponse {
-                message: format!("{}", e),
-            }),
-        );
-    }
+    input::send_paste_input()?;
+    input::send_enter_input()?;
 
-    if let Err(e) = input::send_paste_input() {
-        return (
-            StatusCode::BAD_REQUEST,
-            Json(UrlResponse {
-                message: format!("{}", e),
-            }),
-        );
-    }
-
-    if let Err(e) = input::send_enter_input() {
-        return (
-            StatusCode::BAD_REQUEST,
-            Json(UrlResponse {
-                message: format!("{}", e),
-            }),
-        );
-    }
-
-    (
-        StatusCode::OK,
-        Json(UrlResponse {
-            message: String::from("ok"),
-        }),
-    )
+    Ok(Json(UrlResponse {
+        message: String::from("ok"),
+    }))
 }
