@@ -15,10 +15,6 @@ version = "0.30.0"
 features = [
     "alloc",
     "Win32_Foundation",
-    "Win32_Globalization",
-    "Win32_System_DataExchange",
-    "Win32_System_Memory",
-    "Win32_System_SystemServices",
     "Win32_UI_WindowsAndMessaging",
     "Win32_UI_Input_KeyboardAndMouse"
 ]
