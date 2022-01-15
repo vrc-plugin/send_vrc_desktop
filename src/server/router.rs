@@ -3,10 +3,10 @@ use axum::{
     Router,
 };
 
-use super::handle;
+use super::handler;
 
 pub fn new() -> Router {
     Router::new()
-        .route("/url", post(handle::url))
-        .route("/url", put(handle::url))
+        .route("/url", post(handler::url))
+        .route("/url", put(handler::url))
 }
