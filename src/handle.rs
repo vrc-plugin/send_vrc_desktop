@@ -29,7 +29,7 @@ pub async fn url(Json(payload): Json<UrlRequest>) -> Result<Json<UrlResponse>, A
     input::send_dummy_input()?;
     window::set_foreground_window(hwnd)?;
 
-    input::send_paste_input()?;
+    input::send_paste_input().await?;
     input::send_enter_input()?;
 
     Ok(Json(UrlResponse {
