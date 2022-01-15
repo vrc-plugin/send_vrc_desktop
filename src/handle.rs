@@ -1,5 +1,5 @@
 use actix_web::web::Json;
-use actix_web::{put, HttpResponse, Responder};
+use actix_web::{route, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
 use crate::win32api::{clipboard, input, window};
@@ -19,7 +19,8 @@ pub struct ErrorResponse {
     pub error: String,
 }
 
-#[put("/url")]
+// Existence only for compatible of put method, put method endpoint is deprecated
+#[route("/url", method = "PUT", method = "POST")]
 pub async fn url(req: Json<UrlRequest>) -> impl Responder {
     let url = &req.url;
 
