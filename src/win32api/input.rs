@@ -1,3 +1,4 @@
+use std::mem::size_of;
 use std::time::Duration;
 
 use anyhow::{anyhow, Result};
@@ -8,13 +9,7 @@ use windows::Win32::UI::Input::KeyboardAndMouse::{
 };
 
 fn send_input(inputs: &[INPUT]) -> Result<(), ()> {
-    match unsafe {
-        SendInput(
-            inputs.len() as _,
-            inputs.as_ptr(),
-            std::mem::size_of::<INPUT>() as _,
-        )
-    } {
+    match unsafe { SendInput(inputs.len() as _, inputs.as_ptr(), size_of::<INPUT>() as _) } {
         0 => Err(()),
         _ => Ok(()),
     }
