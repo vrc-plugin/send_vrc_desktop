@@ -6,7 +6,5 @@ use axum::{
 use super::handler;
 
 pub fn new() -> Router {
-    Router::new()
-        .route("/url", post(handler::url))
-        .route("/url", put(handler::url))
+    Router::new().route("/url", post(handler::url).put(handler::url))
 }
