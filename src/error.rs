@@ -1,3 +1,4 @@
+use anyhow::Error;
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -6,25 +7,23 @@ use axum::{
 use serde::Serialize;
 
 #[derive(Serialize)]
-pub struct ErrorResponse {
+pub struct ApiErrorResponse {
     pub error: String,
 }
 
-pub struct ApiError {
-    err: anyhow::Error,
-}
+pub struct ApiError(Error);
 
-impl From<anyhow::Error> for ApiError {
-    fn from(err: anyhow::Error) -> ApiError {
-        ApiError { err }
+impl From<Error> for ApiError {
+    fn from(err: Error) -> ApiError {
+        ApiError(err)
     }
 }
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let status = StatusCode::BAD_REQUEST;
-        let body = Json(ErrorResponse {
-            error: format!("{}", self.err),
+        let body = Json(ApiErrorResponse {
+            error: format!("{}", self.0),
         });
         (status, body).into_response()
     }
