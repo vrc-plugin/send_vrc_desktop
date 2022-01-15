@@ -3,10 +3,9 @@ use axum::Json;
 use clipboard_win::set_clipboard_string;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    error::ApiError,
-    win32api::{input, window},
-};
+use crate::win32api::{input, window};
+
+use super::error::ApiError;
 
 #[derive(Deserialize)]
 pub struct UrlRequest {
