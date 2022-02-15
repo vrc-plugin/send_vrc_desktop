@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+    paths:
+      - "src/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --release --verbose
+
+      - name: Archive to zip
+        run: |
+          mkdir -p dist
+          powershell compress-archive -Path target/release/send-vrc-desktop.exe -DestinationPath dist/send_vrc_desktop.zip
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "dist/send_vrc_desktop.zip"
+          prerelease: ${{ contains(github.ref, '-beta') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}:w
