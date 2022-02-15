@@ -6,6 +6,7 @@ use std::env;
 use std::net::SocketAddr;
 
 use anyhow::Result;
+use chrono::Local;
 
 const DEFAULT_PORT: u16 = 11400;
 
@@ -17,8 +18,10 @@ pub async fn start() -> Result<()> {
         .unwrap_or(DEFAULT_PORT);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let local_datetime = Local::now();
 
-    println!("listening on {}", addr);
+    println!("listening on {addr}");
+    println!("START {local_datetime}");
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await?;

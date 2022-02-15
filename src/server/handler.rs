@@ -19,6 +19,7 @@ pub struct UrlResponse {
 
 pub async fn url(Json(payload): Json<UrlRequest>) -> Result<Json<UrlResponse>, ApiError> {
     let url = &payload.url;
+    println!("received url: {url}");
 
     set_clipboard_string(url).map_err(|_| anyhow!("failed to set clipboard"))?;
 
