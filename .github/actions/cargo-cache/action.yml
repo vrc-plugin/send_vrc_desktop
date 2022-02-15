@@ -1,0 +1,16 @@
+name: Cache .cargo directory
+description: Caching .cargo directory
+runs:
+  using: composite
+  steps:
+    - name: Cache .cargo directory
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-
