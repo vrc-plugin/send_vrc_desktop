@@ -1,7 +1,7 @@
 mod error;
 mod handler;
 mod router;
-
+use chrono::{DateTime, Local};
 use std::env;
 use std::net::SocketAddr;
 
@@ -17,8 +17,10 @@ pub async fn start() -> Result<()> {
         .unwrap_or(DEFAULT_PORT);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let local_datetime: DateTime<Local> = Local::now();
 
-    println!("listening on {}", addr);
+    println!("listening on port {}", addr);
+    println!("START {}", local_datetime);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await?;
