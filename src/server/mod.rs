@@ -19,8 +19,8 @@ pub async fn start() -> Result<()> {
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     let local_datetime: DateTime<Local> = Local::now();
 
-    println!("listening on port {}", addr);
-    println!("START {}", local_datetime);
+    println!("listening on ${addr}");
+    println!("START {local_datetime}");
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await?;
