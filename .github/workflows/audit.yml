@@ -24,6 +24,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: ./.github/actions/cargo-cache
+
       - name: Security audit
         uses: actions-rs/audit-check@v1
         with:
