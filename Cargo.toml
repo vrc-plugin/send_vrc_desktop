@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.53"
-axum = "0.4.4"
+axum = "0.4.5"
 chrono = "0.4.19"
 tokio = { version = "1.16.1", features = ["full"] }
 serde = { version = "1.0.136", features = ["derive"] }
