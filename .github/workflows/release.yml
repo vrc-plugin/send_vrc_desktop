@@ -44,4 +44,4 @@ jobs:
           files: "dist/send_vrc_desktop.zip"
           prerelease: ${{ contains(github.ref, '-beta') }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}:w
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
