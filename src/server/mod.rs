@@ -6,7 +6,7 @@ use std::env;
 use std::net::SocketAddr;
 
 use anyhow::Result;
-use chrono::Local;
+use time::OffsetDateTime;
 
 const DEFAULT_PORT: u16 = 11400;
 
@@ -18,7 +18,7 @@ pub async fn start() -> Result<()> {
         .unwrap_or(DEFAULT_PORT);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
-    let local_datetime = Local::now();
+    let local_datetime = OffsetDateTime::now_local().unwrap_or(OffsetDateTime::now_utc());
 
     println!("listening on {addr}");
     println!("START {local_datetime}");
