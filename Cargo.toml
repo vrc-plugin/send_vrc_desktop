@@ -7,7 +7,7 @@ edition = "2021"
 anyhow = "1.0.53"
 axum = "0.4.5"
 time = { version = "0.3.7", features = ["local-offset"] }
-tokio = { version = "1.16.1", features = ["full"] }
+tokio = { version = "1.17.0", features = ["full"] }
 serde = { version = "1.0.136", features = ["derive"] }
 clipboard-win = "4.4.1"
 windows = { version = "0.32.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
