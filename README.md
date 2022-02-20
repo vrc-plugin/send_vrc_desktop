@@ -5,7 +5,7 @@
 ## Installation
 
 ```ps1
-cargo install --git https://github.com/koyashiro/send-vrc-desktop-rs
+cargo install --git https://github.com/vrc-plugin/send-vrc-desktop-rs
 ```
 
 ## Usage
