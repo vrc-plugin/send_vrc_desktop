@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.54"
+anyhow = "1.0.55"
 axum = "0.4.5"
 time = { version = "0.3.7", features = ["local-offset"] }
 tokio = { version = "1.17.0", features = ["full"] }
