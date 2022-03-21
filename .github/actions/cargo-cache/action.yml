@@ -4,7 +4,7 @@ runs:
   using: composite
   steps:
     - name: Cache .cargo directory
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/.cargo/bin/
