@@ -4,7 +4,7 @@
 
 ## Installation
 
-```ps1
+```sh
 cargo install --git https://github.com/vrc-plugin/send-vrc-desktop-rs
 ```
 
