@@ -23,7 +23,7 @@ pub async fn url(Json(payload): Json<UrlRequest>) -> Result<Json<UrlResponse>, A
 
     set_clipboard_string(url).map_err(|_| anyhow!("failed to set clipboard"))?;
 
-    let hwnd = window::find_window_by_name("VRChat")?;
+    let hwnd = window::find_window_by_name("VRChat");
     window::set_foreground_window(hwnd)?;
 
     input::send_dummy_input()?;

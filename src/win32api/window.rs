@@ -6,10 +6,8 @@ use windows::Win32::{
 
 use crate::win32api::input::send_dummy_input;
 
-pub fn find_window_by_name(name: &str) -> Result<HWND> {
+pub fn find_window_by_name(name: &str) -> HWND {
     unsafe { FindWindowA(None, name) }
-        .ok()
-        .map_err(|_| anyhow!("`{}` does not exists", name))
 }
 
 pub fn set_foreground_window(hwnd: HWND) -> Result<()> {
