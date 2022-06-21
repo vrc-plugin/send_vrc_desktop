@@ -27,10 +27,15 @@ jobs:
       - name: Build
         run: cargo build --release --verbose
 
+      - name: Add licence.txt
+        run: |
+          - cargo install cargo-license
+          - cargo license > target/release/licence.txt
+
       - name: Archive to zip
         run: |
           New-Item -ItemType Directory dist
-          Compress-Archive -Path target/release/send-vrc-desktop.exe -DestinationPath dist/send-vrc-desktop-${{ needs.get-release-version.outputs.release_version }}-x86_64-pc-windows-msvc.zip
+          Compress-Archive -Path target/release/send-vrc-desktop.exe,target/release/licence.txt -DestinationPath dist/send-vrc-desktop-${{ needs.get-release-version.outputs.release_version }}-x86_64-pc-windows-msvc.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
