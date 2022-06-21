@@ -2,6 +2,7 @@
 name = "send-vrc-desktop"
 version = "1.0.1"
 edition = "2021"
+license = "MIT"
 
 [dependencies]
 anyhow = "1.0.58"
