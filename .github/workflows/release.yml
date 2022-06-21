@@ -29,8 +29,8 @@ jobs:
 
       - name: Add licence.txt
         run: |
-          - cargo install cargo-license
-          - cargo license > target/release/licence.txt
+          cargo install cargo-license
+          cargo license > target/release/licence.txt
 
       - name: Archive to zip
         run: |
