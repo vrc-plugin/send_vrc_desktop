@@ -11,4 +11,4 @@ time = { version = "0.3.10", features = ["local-offset"] }
 tokio = { version = "1.19.2", features = ["full"] }
 serde = { version = "1.0.137", features = ["derive"] }
 clipboard-win = "4.4.1"
-windows = { version = "0.37.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
+windows = { version = "0.38.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
