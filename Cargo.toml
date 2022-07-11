@@ -9,6 +9,6 @@ anyhow = "1.0.58"
 axum = "0.5.11"
 time = { version = "0.3.11", features = ["local-offset"] }
 tokio = { version = "1.19.2", features = ["full"] }
-serde = { version = "1.0.138", features = ["derive"] }
+serde = { version = "1.0.139", features = ["derive"] }
 clipboard-win = "4.4.1"
 windows = { version = "0.38.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
