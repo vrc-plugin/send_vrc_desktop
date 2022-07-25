@@ -8,7 +8,7 @@ license = "MIT"
 anyhow = "1.0.58"
 axum = "0.5.13"
 time = { version = "0.3.11", features = ["local-offset"] }
-tokio = { version = "1.20.0", features = ["full"] }
+tokio = { version = "1.20.1", features = ["full"] }
 serde = { version = "1.0.140", features = ["derive"] }
 clipboard-win = "4.4.2"
 windows = { version = "0.38.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
