@@ -5,10 +5,10 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-anyhow = "1.0.58"
-axum = "0.5.9"
-time = { version = "0.3.10", features = ["local-offset"] }
-tokio = { version = "1.19.2", features = ["full"] }
-serde = { version = "1.0.137", features = ["derive"] }
-clipboard-win = "4.4.1"
-windows = { version = "0.37.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
+anyhow = "1.0.59"
+axum = "0.5.14"
+time = { version = "0.3.12", features = ["local-offset"] }
+tokio = { version = "1.20.1", features = ["full"] }
+serde = { version = "1.0.142", features = ["derive"] }
+clipboard-win = "4.4.2"
+windows = { version = "0.38.0", features = ["alloc", "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
