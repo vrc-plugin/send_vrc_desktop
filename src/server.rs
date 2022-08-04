@@ -18,7 +18,7 @@ pub async fn start() -> Result<()> {
         .unwrap_or(DEFAULT_PORT);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
-    let local_datetime = OffsetDateTime::now_local().unwrap_or(OffsetDateTime::now_utc());
+    let local_datetime = OffsetDateTime::now_local().unwrap_or_else(|_e| OffsetDateTime::now_utc());
 
     println!("listening on {addr}");
     println!("START {local_datetime}");
