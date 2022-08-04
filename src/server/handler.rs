@@ -2,6 +2,8 @@ use anyhow::{anyhow, Result};
 use axum::Json;
 use clipboard_win::set_clipboard_string;
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
+use tokio::time::sleep;
 
 use crate::win32api::{input, window};
 
@@ -18,6 +20,7 @@ pub struct UrlResponse {
 }
 
 pub async fn url(Json(payload): Json<UrlRequest>) -> Result<Json<UrlResponse>, ApiError> {
+    const INPUT_WAIT_DURATION: Duration = Duration::from_millis(500);
     let url = &payload.url;
     println!("received url: {url}");
 
@@ -26,9 +29,11 @@ pub async fn url(Json(payload): Json<UrlRequest>) -> Result<Json<UrlResponse>, A
     let hwnd = window::find_window_by_name("VRChat");
     window::set_foreground_window(hwnd)?;
 
+    sleep(INPUT_WAIT_DURATION).await;
     input::send_dummy_input()?;
     window::set_foreground_window(hwnd)?;
 
+    sleep(INPUT_WAIT_DURATION).await;
     input::send_paste_input().await?;
     input::send_enter_input()?;
 
