@@ -50,6 +50,9 @@ pub fn send_dummy_input() -> Result<()> {
 pub async fn send_paste_input() -> Result<()> {
     const ERROR_MESSAGE: &str = "failed to send `Paste` (`Ctrl` + `V`) input";
     const DURATION: Duration = Duration::from_millis(100);
+    const INPUT_WAIT_DURATION: Duration = Duration::from_millis(500);
+
+    sleep(INPUT_WAIT_DURATION).await;
 
     let inputs = [
         // Left Ctrl Down
