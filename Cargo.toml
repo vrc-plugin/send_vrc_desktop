@@ -6,7 +6,7 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0.66"
-axum = "0.6.0"
+axum = "0.6.1"
 time = { version = "0.3.17", features = ["local-offset"] }
 tokio = { version = "1.22.0", features = ["full"] }
 serde = { version = "1.0.147", features = ["derive"] }
