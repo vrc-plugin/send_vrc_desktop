@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-anyhow = "1.0.67"
+anyhow = "1.0.68"
 axum = "0.6.1"
 time = { version = "0.3.17", features = ["local-offset"] }
 tokio = { version = "1.23.0", features = ["full"] }
