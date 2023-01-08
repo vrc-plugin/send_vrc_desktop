@@ -10,5 +10,5 @@ axum = "0.6.1"
 time = { version = "0.3.17", features = ["local-offset"] }
 tokio = { version = "1.24.1", features = ["full"] }
 serde = { version = "1.0.152", features = ["derive"] }
-clipboard-win = "4.4.2"
+clipboard-win = "4.5.0"
 windows = { version = "0.43.0", features = ["Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging"] }
