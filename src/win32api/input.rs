@@ -5,7 +5,7 @@ use anyhow::{anyhow, Result};
 use tokio::time::sleep;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
     MapVirtualKeyA, SendInput, INPUT, INPUT_0, INPUT_KEYBOARD, KEYBDINPUT, KEYBD_EVENT_FLAGS,
-    KEYEVENTF_EXTENDEDKEY, KEYEVENTF_KEYUP, VK_CONTROL, VK_RETURN, VK_V,
+    KEYEVENTF_EXTENDEDKEY, KEYEVENTF_KEYUP, MAPVK_VK_TO_VSC, VK_CONTROL, VK_RETURN, VK_V,
 };
 
 fn send_input(inputs: &[INPUT]) -> Result<(), ()> {
@@ -22,7 +22,7 @@ pub fn send_dummy_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_CONTROL,
-                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYBD_EVENT_FLAGS(0),
                     time: 0,
                     dwExtraInfo: 0,
@@ -34,7 +34,7 @@ pub fn send_dummy_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_CONTROL,
-                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0,
@@ -58,7 +58,7 @@ pub async fn send_paste_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_CONTROL,
-                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYBD_EVENT_FLAGS(0),
                     time: 0,
                     dwExtraInfo: 0,
@@ -71,7 +71,7 @@ pub async fn send_paste_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_CONTROL,
-                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYEVENTF_EXTENDEDKEY,
                     time: 0,
                     dwExtraInfo: 0,
@@ -90,7 +90,7 @@ pub async fn send_paste_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_V,
-                    wScan: unsafe { MapVirtualKeyA(VK_V.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_V.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYBD_EVENT_FLAGS(0),
                     time: 0,
                     dwExtraInfo: 0,
@@ -103,7 +103,7 @@ pub async fn send_paste_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_V,
-                    wScan: unsafe { MapVirtualKeyA(VK_V.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_V.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0,
@@ -122,7 +122,7 @@ pub async fn send_paste_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_CONTROL,
-                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0,
@@ -135,7 +135,7 @@ pub async fn send_paste_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_CONTROL,
-                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_CONTROL.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY,
                     time: 0,
                     dwExtraInfo: 0,
@@ -155,7 +155,7 @@ pub fn send_enter_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_RETURN,
-                    wScan: unsafe { MapVirtualKeyA(VK_RETURN.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_RETURN.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYBD_EVENT_FLAGS(0),
                     time: 0,
                     dwExtraInfo: 0,
@@ -167,7 +167,7 @@ pub fn send_enter_input() -> Result<()> {
             Anonymous: INPUT_0 {
                 ki: KEYBDINPUT {
                     wVk: VK_RETURN,
-                    wScan: unsafe { MapVirtualKeyA(VK_RETURN.0 as _, 0) } as _,
+                    wScan: unsafe { MapVirtualKeyA(VK_RETURN.0 as _, MAPVK_VK_TO_VSC) } as _,
                     dwFlags: KEYEVENTF_KEYUP,
                     time: 0,
                     dwExtraInfo: 0,
