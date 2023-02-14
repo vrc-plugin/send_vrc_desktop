@@ -1,5 +1,5 @@
 [package]
-name = "send-vrc-desktop"
+name = "send_vrc_desktop"
 version = "1.0.5"
 edition = "2021"
 license = "MIT"

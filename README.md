@@ -1,11 +1,11 @@
-# send-vrc-desktop-rs
+# send_vrc_desktop
 
 [send_vrc_desktop](https://github.com/bootjp/send_vrc_desktop) written in Rust.
 
 ## Installation
 
 ```sh
-cargo install --git https://github.com/vrc-plugin/send-vrc-desktop-rs
+cargo install --git https://github.com/vrc-plugin/send_vrc_desktop
 ```
 
 ## Usage
