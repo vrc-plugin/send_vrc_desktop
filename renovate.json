@@ -1,4 +1,5 @@
 {
-  "extends": ["config:base", ":semanticCommits"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", ":semanticCommitTypeAll(build)"],
   "commitBody": "Signed-off-by: {{{gitAuthor}}}"
 }
