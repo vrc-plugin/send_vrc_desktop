@@ -7,7 +7,7 @@ license = "MIT"
 [dependencies]
 anyhow = "1.0.71"
 axum = "0.6.18"
-time = { version = "0.3.21", features = ["local-offset"] }
+time = { version = "0.3.22", features = ["local-offset"] }
 tokio = { version = "1.28.2", features = ["full"] }
 serde = { version = "1.0.163", features = ["derive"] }
 clipboard-win = "4.5.0"
