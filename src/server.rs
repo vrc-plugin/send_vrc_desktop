@@ -7,6 +7,7 @@ use std::net::SocketAddr;
 
 use anyhow::Result;
 use time::OffsetDateTime;
+use tokio::net::TcpListener;
 
 const DEFAULT_PORT: u16 = 11400;
 
@@ -22,9 +23,8 @@ pub async fn start() -> Result<()> {
 
     println!("listening on {addr}");
     println!("START {local_datetime}");
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await?;
+    let listener = TcpListener::bind(&addr).await?;
+    axum::serve(listener, app).await?;
 
     Ok(())
 }
