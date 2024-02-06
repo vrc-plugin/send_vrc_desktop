@@ -15,7 +15,8 @@ pub async fn start() -> Result<()> {
     let app = router::new();
 
     let port = env::var("PORT")
-        .map(|p| p.parse().unwrap_or(DEFAULT_PORT))
+        .ok()
+        .and_then(|p| p.parse().ok())
         .unwrap_or(DEFAULT_PORT);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
