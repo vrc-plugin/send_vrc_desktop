@@ -38,7 +38,7 @@ jobs:
           Compress-Archive -Path target/release/send_vrc_desktop.exe,target/release/licence.txt -DestinationPath dist/send_vrc_desktop-${{ needs.get-release-version.outputs.release_version }}-x86_64-pc-windows-msvc.zip
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/send_vrc_desktop-${{ needs.get-release-version.outputs.release_version }}-x86_64-pc-windows-msvc.zip
           prerelease: ${{ contains(github.ref, '-beta') }}
