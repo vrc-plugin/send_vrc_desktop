@@ -2,5 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":semanticCommits"],
   "commitBody": "Signed-off-by: {{{gitAuthor}}}",
-  "reviewers": ["koyashiro"]
+  "reviewers": ["koyashiro"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "automergeType": "squash"
+    }
+  ]
 }
